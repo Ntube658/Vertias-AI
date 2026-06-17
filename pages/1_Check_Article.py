@@ -7,13 +7,29 @@ import os
 # Get the models directory path
 models_dir = os.path.join(os.path.dirname(__file__), "..", "models")
 
-# LOAD MODELS
-LR = pickle.load(open(os.path.join(models_dir, "LR.pkl"),"rb"))
-DTC = pickle.load(open(os.path.join(models_dir, "DTC.pkl"),"rb"))
-rfc = pickle.load(open(os.path.join(models_dir, "rfc.pkl"),"rb"))
-MNB = pickle.load(open(os.path.join(models_dir, "MNB.pkl"),"rb"))
+# LOAD MODELS WITH ERROR HANDLING
+models = {}
+model_names = ["LR", "DTC", "rfc", "MNB"]
 
-vectorizer = pickle.load(open(os.path.join(models_dir, "vectorizer.pkl"),"rb"))
+for model_name in model_names:
+    model_path = os.path.join(models_dir, f"{model_name}.pkl")
+    try:
+        models[model_name] = pickle.load(open(model_path, "rb"))
+    except FileNotFoundError:
+        st.error(f"⚠️ Model file missing: {model_name}.pkl")
+        models[model_name] = None
+
+# Load vectorizer
+try:
+    vectorizer = pickle.load(open(os.path.join(models_dir, "vectorizer.pkl"), "rb"))
+except FileNotFoundError:
+    st.error("⚠️ Vectorizer file missing: vectorizer.pkl")
+    vectorizer = None
+
+LR = models.get("LR")
+DTC = models.get("DTC")
+rfc = models.get("rfc")
+MNB = models.get("MNB")
 
 st.markdown("""
     <style>
@@ -136,6 +152,11 @@ st.markdown(
 )
 
 st.markdown("---")
+
+# Check if models are loaded
+if not all([LR, DTC, rfc, MNB, vectorizer]):
+    st.error("❌ Not all required models are available. Please check your models directory.")
+    st.stop()
 
 # FORM
 
