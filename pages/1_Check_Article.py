@@ -2,14 +2,18 @@ import streamlit as st
 import pickle
 import re
 import plotly.graph_objects as go
+import os
+
+# Get the models directory path
+models_dir = os.path.join(os.path.dirname(__file__), "..", "models")
 
 # LOAD MODELS
-LR = pickle.load(open("LR.pkl","rb"))
-DTC = pickle.load(open("DTC.pkl","rb"))
-rfc = pickle.load(open("rfc.pkl","rb"))
-MNB = pickle.load(open("MNB.pkl","rb"))
+LR = pickle.load(open(os.path.join(models_dir, "LR.pkl"),"rb"))
+DTC = pickle.load(open(os.path.join(models_dir, "DTC.pkl"),"rb"))
+rfc = pickle.load(open(os.path.join(models_dir, "rfc.pkl"),"rb"))
+MNB = pickle.load(open(os.path.join(models_dir, "MNB.pkl"),"rb"))
 
-vectorizer = pickle.load(open("vectorizer.pkl","rb"))
+vectorizer = pickle.load(open(os.path.join(models_dir, "vectorizer.pkl"),"rb"))
 
 st.markdown("""
     <style>
